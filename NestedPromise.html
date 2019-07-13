@@ -1,0 +1,83 @@
+<html>
+<input type='button' value="start Counter" onclick="setCounter()"/>
+<script>
+var countindex=0;
+/* Pr0cess A */
+ProcessA=function(){
+	console.log("ProcessA started ");
+	return new Promise(function(resolve,reject){
+	setTimeout(function(){
+	ProcessB().then(function(msg){
+		console.log(msg);
+		setTimeout(function(){
+                        resolve("Process A Completed sucessfully");
+                     },5000);	
+		})	
+		},5000);
+	});
+};
+/* Pr0cess B */
+ProcessB=function(){
+	console.log("ProcessB started ");
+	return new Promise(function(resolve,reject){
+	setTimeout(function(){
+	ProcessC().then(function(msg){
+		console.log(msg);
+		setTimeout(function(){
+                        resolve("Process B Completed sucessfully");
+                     },5000);	
+	})
+	},5000);
+	});
+};
+/* Pr0cess C */
+ProcessC=function(){
+	console.log("ProcessC started sucessfully");
+	return new Promise(function(resolve,reject){
+	setTimeout(function(){
+		ProcessD().catch(function(msg){
+		console.log(msg);
+		setTimeout(function(){
+                        resolve("Process C Completed sucessfully");
+                     },5000);	
+	});
+	},5000)
+	});
+
+};
+
+/* Pr0cess D */
+ProcessD=function(){
+	console.log("ProcessD started sucessfully");
+	return new Promise(function(resolve,reject){
+	setTimeout(function(){
+	reject("ProcessD Rejected")},5000)
+	});
+};
+/* Counter B */
+var counterRun=false;
+counter=function(){
+    console.log("Count: "+countindex);
+	setTimeout(function(){
+	countindex++;
+	if(countindex==5){
+		ProcessA().then(function(msg){
+		console.log(msg);
+		});
+	}
+	if(counterRun)counter();
+	},1000);
+};
+
+setCounter=function(){
+if(counterRun){
+counterRun=false
+}
+else{
+counterRun=true;
+counter();
+}
+};
+
+</script>
+</html>
